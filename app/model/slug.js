@@ -19,7 +19,7 @@ const slugSchema = new Schema({
   },
 });
 
-const Slug = model('Model', slugSchema);
+const Slug = model('Slug', slugSchema);
 
 /**
  * CRUD:
