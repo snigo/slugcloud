@@ -1,13 +1,17 @@
 const { Router } = require('express');
+const { signupMW, authMW } = require('../auth');
 const { getByUser } = require('../model/slug');
 
 const userRouter = Router();
 
-userRouter.get('/slugs', async (req, res) => {
+userRouter.post('/signup', signupMW, (_, res) => {
+  const { pid, cid, token } = res.user;
+  res.status(200).json({ pid, cid, token });
+});
+
+userRouter.get('/slugs', authMW, async (req, res) => {
   try {
-    const pid = req.cookies.pid || req.headers['x-consumer-id'];
-    const slugs = await getByUser(pid);
-    if (!slugs || !pid) return res.status(401);
+    const slugs = await getByUser(res.user.pid);
     res.status(200).json({ data: slugs });
   } catch (err) {
     res.status(500).json({ message: err });
